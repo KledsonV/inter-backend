@@ -99,7 +99,7 @@ router.post(
 );
 
 // Get All Students
-router.get("/aluno", async (req, res) => {
+router.get("/aluno",verifyToken, async (req, res) => {
   try {
     const studentRepository = new StudentRepository();
     const getAllStudents = new GetAllStudentsCase(studentRepository);

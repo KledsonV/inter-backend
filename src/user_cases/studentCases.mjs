@@ -3,11 +3,12 @@ import Student from "../data/models/studentModel.mjs";
 import Image from "../data/models/imageModel.mjs";
 
 const validationName = (value) => {
-  if (/[^a-zA-Z0-9\s]/.test(value)) {
-    throw new Error("O Nome e senha não pode conter caracteres especiais.");
+  const specialCharacters = value.match(/[^a-zA-Z]/g);
+  if (/[^a-zA-Z0-9\sàáâãçéêíóôõúü]/.test(value)) {
+    throw new Error("O Nome não pode conter caracteres especiais.");
   }
-  if (!/[a-zA-Z]{3,}/.test(value)) {
-    throw new Error("O nome deve conter pelo menos 5 letras.");
+  if (!/[a-zA-Zàáâãçéêíóôõúü]{3,}/i.test(value)) {
+    throw new Error("O nome deve conter pelo menos 3 letras ou caracteres especiais.");
   }
   return true;
 };
@@ -16,11 +17,11 @@ const validationFather = (value) => {
     return true;
   }
 
-  if (/[^a-zA-Z0-9\s]/.test(value)) {
-    throw new Error("O Nome e senha não pode conter caracteres especiais.");
+  if (/[^a-zA-Z0-9\sàáâãçéêíóôõúü]/.test(value)) {
+    throw new Error("O Nome não pode conter caracteres especiais.");
   }
-  if (!/[a-zA-Z]{5,}/.test(value)) {
-    throw new Error("O nome deve conter pelo menos 5 letras.");
+  if (!/[a-zA-Z]{3,}/.test(value)) {
+    throw new Error("O nome deve conter pelo menos 3 letras.");
   }
   return true;
 };

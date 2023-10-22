@@ -20,7 +20,7 @@ const Student = connection.define("student", {
     comment: "Idade do aluno(a)",
   },
   birth: {
-    type: DataTypes.DATE,
+    type: DataTypes.STRING,
     allowNull: false,
     comment: "Data de nascimento do aluno(a)",
   },

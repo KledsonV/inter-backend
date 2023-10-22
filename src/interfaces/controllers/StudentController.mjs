@@ -12,6 +12,7 @@ import {
   DeleteStudent,
   GetAllStudentsCase,
   GetStudentByIdCase,
+  GetStudentByNameCase,
   UpdateClassByIdCase,
   UpdateStudentByIdCase,
   updateImageByIdCase,
@@ -99,7 +100,7 @@ router.post(
 );
 
 // Get All Students
-router.get("/aluno",verifyToken, async (req, res) => {
+router.get("/aluno", verifyToken, async (req, res) => {
   try {
     const studentRepository = new StudentRepository();
     const getAllStudents = new GetAllStudentsCase(studentRepository);
@@ -109,11 +110,28 @@ router.get("/aluno",verifyToken, async (req, res) => {
       return res.status(200).json({
         success: true,
         Students: result.students,
-        Images: result.images
+        Images: result.images,
       });
     } else {
       return res.status(400).json({ success: false, error: result.errors });
     }
+  } catch (error) {
+    return res.status(500).send("Erro interno");
+  }
+});
+
+router.get("/aluno/:name", async (req, res) => {
+  const name = req.params.name;
+  try {
+    const studentRepository = new StudentRepository();
+    const getStudentByN = new GetStudentByNameCase(studentRepository);
+
+    const result = await getStudentByN.execute(name);
+    return res.status(200).json({
+      success: true,
+      Students: result.student,
+      Images: result.images,
+    });
   } catch (error) {
     return res.status(500).send("Erro interno");
   }
@@ -127,41 +145,23 @@ router.get("/consultar/:id", verifyToken, async (req, res) => {
     const getStudent = new GetStudentByIdCase(studentRepository);
 
     const result = await getStudent.execute(id);
-    if (result.success) {
-      return res.status(200).json({
-        success: true,
-        Student: result.student,
-      });
-    } else {
-      return res.status(400).json(result);
-    }
+    return res.status(200).json({
+      success: true,
+      result,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).send("Erro interno");
   }
 });
 
-router.put("/consultar/:id", verifyToken, multerFile.single("file"), async (req, res) => {
-  const { id } = req.params;
-  const {
-    name,
-    age,
-    birth,
-    address,
-    mother,
-    father,
-    contact_mother,
-    contact_father,
-    others,
-    teacher,
-    class_name,
-    shift,
-  } = req.body;
-
-  const file = req.file;
-
-  try {
-    const studentData = {
+router.put(
+  "/consultar/:id",
+  verifyToken,
+  multerFile.single("file"),
+  async (req, res) => {
+    const { id } = req.params;
+    const {
       name,
       age,
       birth,
@@ -171,43 +171,57 @@ router.put("/consultar/:id", verifyToken, multerFile.single("file"), async (req,
       contact_mother,
       contact_father,
       others,
-    };
-
-    const classData = {
       teacher,
       class_name,
       shift,
-    };
+    } = req.body;
 
-    console.log(file);
-    const imageData = {
-      file,
-    };
+    const file = req.file;
 
-    const studentRepository = new StudentRepository();
-    const updateStudentUseCase = new UpdateStudentByIdCase(studentRepository);
+    try {
+      const studentData = {
+        name,
+        age,
+        birth,
+        address,
+        mother,
+        father,
+        contact_mother,
+        contact_father,
+        others,
+      };
 
-    const classRepository = new ClassRepository();
-    const updateClassUseCase = new UpdateClassByIdCase(classRepository);
+      const classData = {
+        teacher,
+        class_name,
+        shift,
+      };
 
-    const imageRepository = new ImageRepository();
-    const updateImageUseCase = new updateImageByIdCase(imageRepository);
+      const imageData = {
+        file,
+      };
 
-    const result = await updateStudentUseCase.execute(req, id, studentData);
-    if (result.success) {
+      const studentRepository = new StudentRepository();
+      const updateStudentUseCase = new UpdateStudentByIdCase(studentRepository);
+
+      const classRepository = new ClassRepository();
+      const updateClassUseCase = new UpdateClassByIdCase(classRepository);
+
+      const imageRepository = new ImageRepository();
+      const updateImageUseCase = new updateImageByIdCase(imageRepository);
+
+      const result = await updateStudentUseCase.execute(req, id, studentData);
       const updateData = await updateClassUseCase.execute(req, id, classData);
       const updateImageData = await updateImageUseCase.execute(id, imageData);
       return res.status(200).json({
         success: true,
         msg: "Estudante atualizado com sucesso.",
       });
-    } else {
-      return res.status(400).json(result);
+    } catch (error) {
+      return res.status(500).send("Erro interno");
     }
-  } catch (error) {
-    return res.status(500).send("Erro interno");
   }
-});
+);
 
 router.delete("/aluno/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
@@ -216,16 +230,12 @@ router.delete("/aluno/:id", verifyToken, async (req, res) => {
     const studentRepository = new StudentRepository();
     const deleteStudent = new DeleteStudent(studentRepository);
 
-    const result = await deleteStudent.execute(id);
+    await deleteStudent.execute(id);
 
-    if (result.success) {
-      return res.status(200).json({
-        success: true,
-        msg: "Estudante deletado com sucesso.",
-      });
-    } else {
-      return res.status(400).json(result);
-    }
+    return res.status(200).json({
+      success: true,
+      msg: "Estudante deletado com sucesso.",
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).send("Erro interno");

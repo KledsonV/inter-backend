@@ -8,7 +8,9 @@ const validationName = (value) => {
     throw new Error("O Nome não pode conter caracteres especiais.");
   }
   if (!/[a-zA-Zàáâãçéêíóôõúü]{3,}/i.test(value)) {
-    throw new Error("O nome deve conter pelo menos 3 letras ou caracteres especiais.");
+    throw new Error(
+      "O nome deve conter pelo menos 3 letras ou caracteres especiais."
+    );
   }
   return true;
 };
@@ -189,6 +191,20 @@ export class GetStudentByIdCase {
   }
 }
 
+export class GetStudentByNameCase {
+  constructor(studentRepository) {
+    this.studentRepository = studentRepository;
+  }
+  async execute(name) {
+    try {
+      const student = await this.studentRepository.getStudentByName(name);
+      return { success: true, student };
+    } catch (error) {
+      return { success: false, error: error };
+    }
+  }
+}
+
 export class UpdateStudentByIdCase {
   constructor(studentRepository) {
     this.studentRepository = studentRepository;
@@ -292,29 +308,26 @@ export class DeleteStudent {
   }
 }
 
-export class CreateImageStudentCase{
+export class CreateImageStudentCase {
   constructor(imageRepository) {
     this.imageRepository = imageRepository;
   }
 
-  async execute(imageData){
+  async execute(imageData) {
     try {
-      const imageSuccess = await this.imageRepository.uploadImage(
-        imageData
-      );
+      const imageSuccess = await this.imageRepository.uploadImage(imageData);
     } catch (error) {
       return { success: false, error: error };
     }
   }
 }
 
-export class updateImageByIdCase{
+export class updateImageByIdCase {
   constructor(imageRepository) {
     this.imageRepository = imageRepository;
   }
 
-  async execute(id, imageData){
-    console.log(imageData, id);
+  async execute(id, imageData) {
     try {
       const imageSuccess = await this.imageRepository.updateImage(
         id,

@@ -23,7 +23,9 @@ router.post("/", async (req, res) => {
       return res
         .status(200)
         .send(
-          "Usuário criado com sucesso!" + "  Token de acesso: " + result.token
+          "Usuário criado com sucesso!" +
+            "  Token de acesso: " +
+            result.token
         );
     } else {
       return res.status(400).send(result.errors);
@@ -42,14 +44,11 @@ router.post("/login", async (req, res) => {
     const loginUserCase = new LoginUserCase(userRepository);
     const result = await loginUserCase.execute(req, user);
 
-    if (result.success) {
-      return res.status(200).json({
-        success: true,
-        token: result.token,
-      });
-    } else {
-      return res.status(400).json({ success: false, error: result.errors });
-    }
+    return res.status(200).json({
+      success: true,
+      token: result.token,
+    });
+
   } catch (error) {
     return res.status(500).json({ success: false, error: "Erro Interno" });
   }

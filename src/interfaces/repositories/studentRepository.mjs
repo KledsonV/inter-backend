@@ -1,6 +1,7 @@
 import Student from "../../data/models/studentModel.mjs";
 import Class from "../../data/models/classModel.mjs";
 import Image from "../../data/models/imageModel.mjs";
+import { Op } from "sequelize";
 
 export class StudentRepository {
   constructor(db) {
@@ -37,26 +38,17 @@ export class StudentRepository {
   }
 
   async getStudentById(studentId) {
-    const studentData = await Student.findOne({ where: { id: studentId } });
+    const studentData = await Student.findOne({
+      where: { id: studentId },
+      include: [Class,
+      Image],
+    });
     if (!studentData) {
       return { success: false, error: "Aluno não encontrado!" };
     }
 
-    const classData = await Class.findOne({
-      where: { studentId: studentData.id },
-    });
-    if (!classData) {
-      return {
-        success: true,
-        studentData: studentData,
-        classData: {
-          msg: "Aluno não está cadastrado em nenhuma turma.",
-        },
-      };
-    }
-
     try {
-      const result = { studentData, classData };
+      const result = { studentData };
       return result;
     } catch (error) {
       throw error;
@@ -94,6 +86,24 @@ export class StudentRepository {
 
     try {
       return resultDelete;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getStudentByName(name){
+    const studentData = await Student.findAll({
+      where: { name: { [Op.like]: `%${name}%` } },
+      include: [Class,
+      Image],
+    });
+    if (!studentData) {
+      return { success: false, error: "Aluno não encontrado!" };
+    }
+
+    try {
+      const result = studentData;
+      return result;
     } catch (error) {
       throw error;
     }
@@ -172,7 +182,7 @@ export class ImageRepository {
 
     try {
       const imageSuccess = await Image.update(newImageData, {
-        where: { studentId: studentId }
+        where: { studentId: studentId },
       });
       return imageSuccess;
     } catch (error) {}

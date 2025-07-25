@@ -1,52 +1,37 @@
-API de Cadastro de Alunos
+# Inter Backend
 
-Esta é uma API de cadastro de alunos que permite realizar operações CRUD (Create, Read, Update, Delete) em registros de alunos. Ela é construída em Node.js e utiliza um banco de dados MySQL para armazenar os dados dos alunos.
-Configuração do Projeto
+API backend construída com Node.js, Express e JavaScript para gerenciar transações financeiras e contas bancárias.
 
-Para executar este projeto em seu ambiente local, siga estas etapas:
-1. Configuração do .env
+## Tecnologias
 
-Certifique-se de criar um arquivo .env na raiz do projeto com as seguintes variáveis de ambiente:
+- Node.js
+- TypeScript
+- Express
+- JWT para autenticação
+- dotenv para variáveis de ambiente
 
-        PORT= ( Porta em que o projeto vai rodar - BackEnd )
-        PORT_CORS= ( Porta em que o projeto vai rodar - FrontEnd )
-        DBNAME= ( Nome do banco de dados )
-        DBUSER= ( Usuario do banco de dados - O padrão é root )
-        DBPASSWORD= ( Senha do banco de dados )
-        DATABASE_HOST= ( Host do banco de dados - O padrão é localhost )
-        DATABASE_PORT=3306 ( Porta do banco de dados - O padrão é 3306)
-        PATH_IMAGE_FRONTEND= ( Diretorio onde ira ficar as imagens )
-        TOKEN= ( Gere um token para utilização de um modulo - Obs: não precisa lembrar depois )
+## Funcionalidades
 
-Certifique-se de preencher as informações do banco de dados com as configurações apropriadas.
-2. Instalação de Dependências
+- Autenticação e autorização de usuários
+- Cadastro e gerenciamento de contas bancárias
+- Registro, edição e exclusão de transações financeiras
+- Controle de acesso baseado em usuário
+- Endpoints REST para todas as operações
 
-No terminal, navegue até a pasta raiz do projeto e execute o seguinte comando para instalar todas as dependências necessárias:
+## Estrutura do Projeto
 
-        npm install
+- `/src/routes` — definição das rotas da API
+- `/src/controllers` — lógica principal das rotas
+- `/src/services` — regras de negócio
+- `/src/middlewares` — validação e autenticação
+- `/src/utils` — funções auxiliares
+- Arquivo `.env` para configuração sensível
 
-3. Inicialização do Servidor
+## Como usar
 
-Após instalar as dependências, você pode iniciar o servidor com o seguinte comando:
+1. Clone o repositório
+2. Instale as dependências com `npm install`
+3. Configure as variáveis de ambiente no arquivo `.env`
+4. Rode a aplicação em modo dev: `npm run dev`
+5. Use as rotas para interagir com o backend (ex: criar contas, lançar transações etc.)
 
-        npm start
-
-Isso iniciará o servidor na porta especificada no arquivo .env (por padrão, 3001).
-
-Uso da API
-
-Esta API oferece os seguintes endpoints:
-
-// Users
-        POST /login: Entra no sistema.
-        POST /user: Realiza o cadastro de um usuario para acessar o sistema.
-        GET /verify-token: Realiza a verificação de um token ( Rota " Inútil " ).
-
-// Students
-        GET /aluno: Retorna a lista de todos os alunos cadastrados.
-        GET /consultar/:id: Retorna os detalhes de um aluno específico com base no ID.
-        POST /registrar: Cria um novo aluno com os dados fornecidos.
-        PUT /consultar/:id: Atualiza os dados de um aluno com base no ID.
-        DELETE /aluno/:id: Exclui um aluno com base no ID.
-
-Certifique-se de usar um software de teste de API, como o Postman ou o Insomnia, para interagir com a API.
